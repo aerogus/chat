@@ -61,6 +61,7 @@ header h1 {
   color: #292933;
   border: 2px solid #292933;
   text-align: center;
+  width: 90vw;
 }
 
 .login.page .title {
@@ -132,6 +133,20 @@ header h1 {
   font-weight: 700;
   padding-right: 15px;
   text-align: right;
+}
+@media screen and (max-width: 640px) {
+  .userName {
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid;
+    display: block;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: left;
+  }
+  .messageBody {
+    padding-left: 0;
+  }
 }
 
 /* Input */
