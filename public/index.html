@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>💬 Chat des Afterworks 💬</title>
+    <link rel="stylesheet" href="/css/knacss.css">
+    <link rel="stylesheet" href="/css/app.css">
+  </head>
+  <body>
+    <div class="box">
+      <header>
+        <h1>💬 Chat des Afterworks 💬</h1>
+      </header>
+      <div>
+        <ul class="pages">
+          <li class="chat page">
+            <div class="chatArea">
+              <ul class="messages"></ul>
+            </div>
+            <input class="inputMessage" placeholder="Écrivez ici…"/>
+          </li>
+          <li class="login page">
+            <div class="form">
+              <h3 class="title">Quel est votre nom de scène ?</h3>
+              <input class="userNameInput" type="text" maxlength="14" />
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script src="/js/jquery-3.5.0.min.js"></script>
+    <script src="/js/socket.io-2.3.0.min.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>
