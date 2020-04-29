@@ -12,14 +12,13 @@ jQuery(document).ready(function ($) {
     '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
   ];
 
-  // Initialize variables
   var $window = $(window);
-  var $userNameInput = $('.userNameInput'); // Input for userName
-  var $messages = $('.messages'); // Messages area
-  var $inputMessage = $('.inputMessage'); // Input message input box
+  var $userNameInput = $('.userNameInput');
+  var $messages = $('.messages');
+  var $inputMessage = $('.inputMessage');
 
-  var $loginPage = $('.login.page'); // The login page
-  var $chatPage = $('.chat.page'); // The chatroom page
+  var $loginPage = $('.login.page');
+  var $chatPage = $('.chat.page');
 
   // Prompt for setting a userName
   var userName;
@@ -31,11 +30,9 @@ jQuery(document).ready(function ($) {
   var socket = io();
 
   const addParticipantsMessage = (data) => {
-    var message = '';
-    if (data.numUsers === 1) {
-      message += "il y a 1 participant";
-    } else {
-      message += "il y a " + data.numUsers + " participants";
+    var message = "il y a " + data.numUsers + " participant";
+    if (data.numUsers > 1) {
+      message += 's';
     }
     log(message);
   }
@@ -107,7 +104,7 @@ jQuery(document).ready(function ($) {
   // Adds the visual chat typing message
   const addChatTyping = (data) => {
     data.typing = true;
-    data.message = "est en train d'écrire";
+    data.message = "est en train d‘écrire";
     addChatMessage(data);
   }
 
@@ -177,7 +174,7 @@ jQuery(document).ready(function ($) {
   // Gets the 'X is typing' messages of a user
   const getTypingMessages = (data) => {
     return $('.typing.message').filter(function (i) {
-      return $(this).data('usernNme') === data.userName;
+      return $(this).data('userName') === data.userName;
     });
   }
 
@@ -233,11 +230,6 @@ jQuery(document).ready(function ($) {
   // Whenever the server emits 'login', log the login message
   socket.on('login', (data) => {
     connected = true;
-    // Display the welcome message
-    var message = "Bienvenue sur le chat des afterworks AD'HOC";
-    log(message, {
-      prepend: true
-    });
     addParticipantsMessage(data);
   });
 

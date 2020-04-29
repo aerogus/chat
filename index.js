@@ -11,45 +11,66 @@ const express = require('express')
   , path = require('path')
   , server = require('http').createServer(app)
   , io = require('socket.io')(server)
-  , port = process.env.PORT || 6667
   , fs = require('fs')
-  , sqlite3 = require('sqlite3');
+  , sqlite3 = require('sqlite3').verbose();;
 
-// todo construction DB si n'existe pas
-if (!fs.existsSync('./chat.db')) {
-  console.log('non');
-}
+const port = process.env.PORT || 82
+  , dbFile = path.join(__dirname, '/chat.db')
 
-const db = new sqlite3.Database('./chat.db', (err) => {
+// nombre total d'utilisateurs connectés
+let numUsers = 0;
+
+// nom du salon, todo: multi salons
+let room = 'main';
+
+// connexion à la DB, la créée si inexistante
+const db = new sqlite3.Database(dbFile, (err) => {
   if (err) {
     console.error(err.message);
   }
+  db.run(`CREATE TABLE IF NOT EXISTS event (
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    room varchar(30) NOT NULL,
+    user varchar(30) NOT NULL,
+    type varchar(30) NOT NULL,
+    message text
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS room_user (
+    room varchar(30) NOT NULL,
+    user varchar(30) NOT NULL,
+    PRIMARY KEY(room, user)
+  )`);
   console.log('Connecté');
 });
 
 server.listen(port, () => {
-  console.log('Server listening at port %d', port);
+  console.log('Démarrage du serveur sur port %d', port);
 });
 
-// Routing
+// fichiers statiques ici
 app.use(express.static(path.join(__dirname, 'public')));
-
-let numUsers = 0;
 
 // connexion d'un nouvel user
 io.on('connection', (socket) => {
   let addedUser = false;
 
-  // réception d'un nouveau message
+  /**
+   * réception d'un 'new message'
+   */
   socket.on('new message', (data) => {
     console.log('new message');
+
+    addEvent(room, socket.userName, 'message', data); 
+
     socket.broadcast.emit('new message', {
       userName: socket.userName,
       message: data,
     });
   });
 
-  // réception d'un 'add user'
+  /**
+   * réception d'un 'add user'
+   */
   socket.on('add user', (userName) => {
     console.log('add user');
     if (addedUser) {
@@ -59,9 +80,14 @@ io.on('connection', (socket) => {
     socket.userName = userName;
     ++numUsers;
     addedUser = true;
+
+    addEvent(room, socket.userName, 'join');
+    userJoinRoom(socket.userName, room);
+
     socket.emit('login', {
       numUsers: numUsers,
     });
+
     // echo globally (all clients) that a person has connected
     socket.broadcast.emit('user joined', {
       userName: socket.userName,
@@ -69,27 +95,39 @@ io.on('connection', (socket) => {
     });
   });
 
-  // when the client emits 'typing', we broadcast it to others
+  /**
+   * réception en cours d'écriture, we broadcast it to others
+   */
   socket.on('typing', () => {
     console.log('typing');
+
     socket.broadcast.emit('typing', {
       userName: socket.userName,
     });
   });
 
-  // when the client emits 'stop typing', we broadcast it to others
+  /**
+   * réception fin d'écriture, we broadcast it to others
+   */
   socket.on('stop typing', () => {
     console.log('stop typing');
+
     socket.broadcast.emit('stop typing', {
       userName: socket.userName,
     });
   });
 
-  // when the user disconnects.. perform this
+  /**
+   * réception déconnexion
+   */
   socket.on('disconnect', () => {
     console.log('disconnect');
+
     if (addedUser) {
       --numUsers;
+
+      addEvent(room, socket.userName, 'leave');
+      userLeaveRoom(socket.userName, room);
 
       // echo globally that this client has left
       socket.broadcast.emit('user left', {
@@ -102,30 +140,26 @@ io.on('connection', (socket) => {
 
 // fonctions DB
 
-function findLastEvents() {
-  const query = 'SELECT ts, room, user, type, message FROM event ORDER BY ts ASC';
-  db.query(query);
-}
-
 function userJoinRoom (user, room) {
-  const query = 'INSERT INTO room_user (room, user) VALUES(%s,%s)';
-  db.query(query);
+  const query = `INSERT INTO room_user (room, user) VALUES (?, ?)`;
+  const values = [room, user];
+  db.run(query, values, err => {
+    console.log(err);
+  });
 }
 
 function userLeaveRoom (user, room) {
-  const query = 'DELETE FROM room_user WHERE room = %s AND user = %s';
-  db.query(query);
+  const query = `DELETE FROM room_user WHERE room = ? AND user = ?`;
+  const values = [room, user];
+  db.run(query, values, err => {
+    console.log(err);
+  });
 }
 
-function findUsersByRoom (room) {
-  const query = 'SELECT user FROM room_user WHERE room = %s';
-  db.query(query);
-}
-
-function addEvent (room, user, type, message) {
-  db.query('INSERT INTO chat_event (room, user, type, message) VALUES("main", "gus", "message", "coucou")', (error, results, fields) => {
-    if (error) {
-      throw error;
-    };
+function addEvent (room, user, type, message = '') {
+  const query = `INSERT INTO event (room, user, type, message) VALUES (?, ?, ?, ?)`;
+  const values = [room, user, type, message];
+  db.run(query, values, err => {
+    console.log(err);
   });
 }
