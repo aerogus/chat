@@ -44,8 +44,6 @@ header h1 {
   color: #fff;
 }
 
-/* Login Page */
-
 .login.page {
   background-color: #292933;
 }
@@ -78,20 +76,8 @@ header h1 {
   font-weight: 100;
 }
 
-/* Chat page */
-
 .chat.page {
   display: none;
-}
-
-/* Font */
-
-.messages {
-  font-size: 150%;
-}
-
-.inputMessage {
-  font-size: 100%;
 }
 
 .log {
@@ -101,8 +87,6 @@ header h1 {
   text-align: center;
 }
 
-/* Messages */
-
 .chatArea {
   height: 100%;
   padding-bottom: 60px;
@@ -110,6 +94,7 @@ header h1 {
 
 .messages {
   max-height: 80vh;
+  font-size: 150%;
   height: 100%;
   margin: 0;
   overflow-y: scroll;
@@ -149,15 +134,14 @@ header h1 {
   }
 }
 
-/* Input */
-
 .inputMessage {
+  font-size: 150%;
+  letter-spacing: 3px;
   border: 10px solid #292933;
   bottom: 0;
-  line-height: 32px;
   left: 0;
   outline: none;
-  padding-left: 10px;
+  padding: 10px;
   position: absolute;
   right: 0;
   width: 100%;
