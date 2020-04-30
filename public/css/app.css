@@ -22,6 +22,10 @@ html, body {
   padding: 0;
 }
 
+input {
+    border-radius: 0;
+}
+
 ul {
   list-style: none;
   word-wrap: break-word;
@@ -81,9 +85,10 @@ header h1 {
 }
 
 .log {
-  color: gray;
+  color: #c0c0c0;
   font-size: 70%;
-  margin: 5px;
+  margin: 0;
+  padding: 0;
   text-align: center;
 }
 
@@ -93,12 +98,12 @@ header h1 {
 }
 
 .messages {
-  max-height: 80vh;
+  max-height: calc(100vh - 60px);
   font-size: 150%;
   height: 100%;
   margin: 0;
   overflow-y: scroll;
-  padding: 10px 20px 10px 20px;
+  padding: 10px;
 }
 
 .messageBody {
@@ -137,7 +142,7 @@ header h1 {
 .inputMessage {
   font-size: 150%;
   letter-spacing: 3px;
-  border: 10px solid #292933;
+  border: 0;
   bottom: 0;
   left: 0;
   outline: none;
