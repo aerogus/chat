@@ -14,7 +14,7 @@ const express = require('express')
   , fs = require('fs')
   , sqlite3 = require('sqlite3').verbose();;
 
-const port = process.env.PORT || 82
+const port = process.env.PORT || 6667
   , dbFile = path.join(__dirname, '/chat.db')
 
 // nombre total d'utilisateurs connectés
@@ -52,6 +52,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // connexion d'un nouvel user
 io.on('connection', (socket) => {
+
   let addedUser = false;
 
   /**
