@@ -1,6 +1,6 @@
 /*global jQuery,io*/
 
-jQuery(document).ready(function ($) {
+$(function () {
 
   'use strict';
 
