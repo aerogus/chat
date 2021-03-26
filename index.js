@@ -11,8 +11,7 @@ const express = require('express')
   , path = require('path')
   , server = require('http').createServer(app)
   , io = require('socket.io')(server)
-  , fs = require('fs')
-  , sqlite3 = require('sqlite3').verbose();;
+  , sqlite3 = require('sqlite3').verbose();
 
 const port = process.env.PORT || 6667
   , dbFile = path.join(__dirname, '/chat.db')
