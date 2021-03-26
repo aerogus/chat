@@ -13,7 +13,7 @@ const express = require('express')
   , io = require('socket.io')(server)
   , sqlite3 = require('sqlite3').verbose();
 
-const port = process.env.PORT || 6667
+const port = process.env.PORT || 80
   , dbFile = path.join(__dirname, '/chat.db')
 
 // nombre total d'utilisateurs connectés
