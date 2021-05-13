@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=root
 Group=root
-ExecStart=/usr/bin/node /var/www/chat.adhocmusic.com/index.js
+ExecStart=/usr/bin/node /var/www/chat/index.js
 Restart=always
 RestartSec=10
 StandardOutput=syslog
@@ -16,3 +16,4 @@ Environment=PORT=6667
 
 [Install]
 WantedBy=multi-user.target
+
